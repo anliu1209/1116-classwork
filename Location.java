@@ -22,7 +22,7 @@ public class Location {
     
     @Override
     public int hashCode() {
-        if (row == null || column == null || row < 0 || column < 0) return 0;
-        return row * 26 + column;
+        if ((Integer)row == null || (Integer)column == null || row < 0 || column < 0) return 0;
+        return row * 10 + column;
     }
 }
