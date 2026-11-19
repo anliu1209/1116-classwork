@@ -8,20 +8,23 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class Screen extends JPanel {
+    // JPanel dimensions
     private static final int WIDTH = 650;
     private static final int HEIGHT = 500;
 
-    private final Thread animationThread;       // Handles smooth 50 FPS movement & repaints
-    private final Thread movementThread;        // Picks a new water node every 1 second
-    private volatile boolean playing = true;    // Shared flag visible across both threads
+    private final Thread animationThread;       // Thread for animation
+    private final Thread movementThread;        // Thread for movement
+    private boolean playing = true;             // Flag to enable threads
     private String result = "";
     private MyHashTable<Location, GridObject> myGridTable;
     private Boat boat;
 
+    // Constructor
     public Screen() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(Color.WHITE);
 
+        // Initialize HashTable
         myGridTable = new MyHashTable<Location, GridObject>();
 
         GridObject sand = new GridObject("sand");
@@ -163,17 +166,20 @@ public class Screen extends JPanel {
         myGridTable.put(new Location(9, 7), water);
         myGridTable.put(new Location(9, 8), water);
         myGridTable.put(new Location(9, 9), water);
-        // Initialize boat 
-        boat = new Boat(0, 7);
 
-        // Thread 1: Calculates the boat's next random water destination every 1000 ms
+        // Initialize boat 
+        boat = new Boat(4, 5);
+
+        // Movement Thread: Calculates new location for boat
         movementThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (playing) {
+                    // Boat chooses adjacent tile from grid
                     boat.chooseNextWater(myGridTable);
 
                     try {
+                        // Every 1000 ms
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
@@ -183,18 +189,18 @@ public class Screen extends JPanel {
             }
         });
 
-        // Thread 2: Updates pixel interpolation and triggers screen repaints every 20 ms
+        // Animation Thread: Repaints screen and moves boat
         animationThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                int frameDelayMs = 20;
-
                 while (playing) {
+                    // Boat slightly moves to new location
                     boat.updateAnimation();
                     repaint();
 
                     try {
-                        Thread.sleep(frameDelayMs);
+                        // Every 20 ms
+                        Thread.sleep(20);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         break;
@@ -207,7 +213,7 @@ public class Screen extends JPanel {
         animationThread.start();
     }
 
-    // Safely stops both background threads when the game ends
+    // Stops both threads when the game ends
     public void stopThreads() {
         playing = false;
         if (animationThread != null) {
@@ -222,9 +228,10 @@ public class Screen extends JPanel {
         super.paintComponent(g);
         g.setColor(Color.BLACK);
 
-        // Draw all terrain and surface objects from the hash table
+        // Draw all GridObjects from the hash table
         for(int row=0; row<10; row+=1){
             for(int col=0; col<10; col+=1){
+                // Creates location for each possible space to get GridObject info for painting
                 Location key = new Location(row, col);
                 DLList<GridObject> gridObjectsList = myGridTable.get( key );
                 if(gridObjectsList != null){
@@ -235,7 +242,7 @@ public class Screen extends JPanel {
             }
         }
 
-        // Draw the boat above the water tiles
+        // Draw the boat on the water tiles
         if (boat != null) {
             boat.drawMe(g);
         }

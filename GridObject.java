@@ -12,7 +12,6 @@ public class GridObject {
 
     // Colors for tree and boulder details
     private Color trunkBrown = new Color(92, 56, 32);
-    private Color leafDark = new Color(30, 68, 26);
     private Color leafLight = new Color(82, 145, 66);
     private Color rockGray = new Color(128, 132, 136);
     private Color rockHighlight = new Color(172, 176, 180);
@@ -51,13 +50,12 @@ public class GridObject {
             g.fillRect(px + 21, py + 31, 8, 13);
 
             // Lower tier
-            g.setColor(leafDark);
+            g.setColor(leafLight);
             int[] lowerX = { px + 10, px + 40, px + 25 };
             int[] lowerY = { py + 33, py + 33, py + 15 };
             g.fillPolygon(lowerX, lowerY, 3);
 
             // Upper tier
-            g.setColor(leafLight);
             int[] upperX = { px + 13, px + 37, px + 25 };
             int[] upperY = { py + 22, py + 22, py + 6 };
             g.fillPolygon(upperX, upperY, 3);

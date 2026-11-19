@@ -20,6 +20,7 @@ public class Location {
         return (this.row == other.row) && (this.column == other.column);
     }
     
+    // Unique location based on row and column (since table can be max of 9 spaces wide/long)
     @Override
     public int hashCode() {
         if ((Integer)row == null || (Integer)column == null || row < 0 || column < 0) return 0;

@@ -10,6 +10,7 @@ public class Runner {
             Screen screen = new Screen();
             frame.add(screen);
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            // Stop movement and animation threads on close
             frame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent event) {
